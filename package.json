@@ -1,0 +1,19 @@
+{
+  "name": "executioner",
+  "version": "1.0.0",
+  "description": "Online judge",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kriticalflare/executioner.git"
+  },
+  "author": "Krithik Pramod Suvarna",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kriticalflare/executioner/issues"
+  },
+  "homepage": "https://github.com/kriticalflare/executioner#readme"
+}
