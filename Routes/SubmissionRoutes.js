@@ -8,6 +8,10 @@ SubmissionRoutes.use(passport.authenticate("jwt", { session: false }));
 SubmissionRoutes.use(userVerification);
 
 SubmissionRoutes.put("/create", SubmissionController.CreateSubmission);
+SubmissionRoutes.get(
+  "/allSubmissions",
+  SubmissionController.ViewAllSubmissions
+);
 SubmissionRoutes.get("/:id", SubmissionController.ViewSubmission);
 
 module.exports = SubmissionRoutes;
