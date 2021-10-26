@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 const submissionSchema = mongoose.Schema({
+  problem: {
+    type: mongoose.Types.ObjectId,
+    ref: "Problem",
+    required: true,
+  },
   source: {
     type: String,
     required: true,
