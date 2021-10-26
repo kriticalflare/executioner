@@ -1,3 +1,5 @@
+const { addToQ } = require("../Judge/Judger");
+const { options } = require("../Routes/UserRoutes");
 const SubmissionModel = require("./../Models/Submission");
 
 module.exports.CreateSubmission = async (req, res, next) => {
@@ -6,7 +8,9 @@ module.exports.CreateSubmission = async (req, res, next) => {
   submission.status = "QUEUED";
   const createdSubmission = await SubmissionModel.create(submission);
   //   add to queue
-
+  // console.log("b4 q", submissionQueue);
+  // submissionQueue.add({ submission: createdSubmission }, { attempts: 2 });
+  addToQ(createdSubmission);
   res.status(201).json({ message: "Successful", data: createdSubmission });
 };
 

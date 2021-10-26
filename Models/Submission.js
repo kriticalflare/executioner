@@ -17,7 +17,7 @@ const submissionSchema = mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ["QUEUED", "SUCCESSFUL", "FAILED"],
+    enum: ["QUEUED", "ACCEPTED", "WA", "NZEC"],
     default: "QUEUED",
   },
   output: {
