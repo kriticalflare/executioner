@@ -14,7 +14,7 @@ module.exports.ViewProblem = async (req, res, next) => {
   const probId = req.params.id;
   const problem = await ProblemModel.findOne({
     _id: probId,
-  });
+  }).select("-tests");
   res.status(200).json({ message: "Successful", data: problem });
 };
 
