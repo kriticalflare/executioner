@@ -16,7 +16,7 @@ module.exports.Register = catchAsync(async (req, res, next) => {
   const result = await User.create(user);
   const token = await createToken({ email: user.email });
   const subject = "Verify your email";
-  const tokenUrl = `${process.env.DOMAIN}/user/verify?token=` + token;
+  const tokenUrl = `${process.env.DOMAIN}/user/verify?token=${token}`;
   const htmlText =
     'Click on this <a href="' + tokenUrl + '">link</a> to verify your email';
 
