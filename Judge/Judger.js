@@ -1,6 +1,6 @@
 const Problem = require("../Models/Problem");
 const Queue = require("bull");
-const TestQueue = new Queue("submit");
+const TestQueue = new Queue("submit", process.env.REDIS_URL);
 const { spawn } = require("child_process");
 const { promises: fs } = require("fs");
 const path = require("path");
