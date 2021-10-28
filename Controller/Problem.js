@@ -17,3 +17,8 @@ module.exports.ViewProblem = async (req, res, next) => {
   });
   res.status(200).json({ message: "Successful", data: problem });
 };
+
+module.exports.ViewAllProblems = async (req, res, next) => {
+  const problems = await ProblemModel.find().select("-tests");
+  res.status(200).json({ message: "Successful", data: problems });
+};

@@ -8,6 +8,7 @@ ProblemRoutes.use(passport.authenticate("jwt", { session: false }));
 ProblemRoutes.use(userVerification);
 
 ProblemRoutes.put("/create", ProblemController.CreateProblem);
+ProblemRoutes.get("/dashboard", ProblemController.ViewAllProblems);
 ProblemRoutes.get("/:id", ProblemController.ViewProblem);
 
 module.exports = ProblemRoutes;
