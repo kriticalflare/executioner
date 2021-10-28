@@ -24,7 +24,6 @@ module.exports.Register = catchAsync(async (req, res, next) => {
 
   res.status(201).json({
     message: "You Have Registered Sucessfully",
-    data: result,
   });
 });
 
