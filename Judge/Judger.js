@@ -45,8 +45,6 @@ TestQueue.process(async (job) => {
       });
 
       childprocess.stderr.on("data", async (output) => {
-        // console.log(`stderr: ${String(output)}`);
-        // console.log("NZEC");
         await Submission.findByIdAndUpdate(submission._id, {
           $set: {
             status: "NZEC",

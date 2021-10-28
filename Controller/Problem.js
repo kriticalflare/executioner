@@ -5,7 +5,6 @@ module.exports.CreateProblem = async (req, res, next) => {
   problem.createdBy = req.user._id;
 
   const createdProblem = await ProblemModel.create(problem);
-  //   add to queue
 
   res.status(201).json({ message: "Successful", data: createdProblem });
 };
