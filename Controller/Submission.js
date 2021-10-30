@@ -20,7 +20,12 @@ module.exports.ViewSubmission = async (req, res, next) => {
 };
 
 module.exports.ViewAllSubmissions = async (req, res, next) => {
-  const submissions = await SubmissionModel.find({ createdBy: req.user._id });
+  const page = req.query.page || 1;
+  const limit = 5;
+  const skip = (page - 1) * limit;
+  const submissions = await SubmissionModel.find({ createdBy: req.user._id })
+    .skip(skip)
+    .limit(limit);
   if (submissions) {
     res.status(201).json({ message: "Successful", data: submissions });
   }
