@@ -12,3 +12,16 @@ module.exports.PromoteToAdmin = async (req, res, next) => {
     res.status(201).json({ message: "User has been promoted to admin" });
   }
 };
+
+module.exports.DemoteToUser = async (req, res, next) => {
+  const userId = req.body.user_id;
+  const update = {
+    $set: {
+      role: "USER",
+    },
+  };
+  const result = await UserModel.findByIdAndUpdate(userId, update);
+  if (result) {
+    res.status(201).json({ message: "User has been demoted from admin" });
+  }
+};

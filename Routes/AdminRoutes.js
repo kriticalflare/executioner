@@ -10,5 +10,6 @@ AdminRoutes.use(userVerification);
 AdminRoutes.use(adminVerification);
 
 AdminRoutes.patch("/promote", AdminController.PromoteToAdmin);
+AdminRoutes.patch("/demote", AdminController.DemoteToUser);
 
 module.exports = AdminRoutes;
