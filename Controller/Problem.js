@@ -18,6 +18,12 @@ module.exports.ViewProblem = async (req, res, next) => {
 };
 
 module.exports.ViewAllProblems = async (req, res, next) => {
-  const problems = await ProblemModel.find().select("-tests");
+  const page = req.query.page || 1;
+  const limit = 5;
+  const skip = (page - 1) * limit;
+  const problems = await ProblemModel.find()
+    .select("-tests")
+    .skip(skip)
+    .limit(limit);
   res.status(200).json({ message: "Successful", data: problems });
 };
