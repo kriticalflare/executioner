@@ -1,6 +1,7 @@
 const UserRoutes = require("./UserRoutes");
 const SubmissionRoutes = require("./SubmissionRoutes");
 const ProblemRoutes = require("./ProblemRoutes");
+const AdminRoutes = require("./AdminRoutes");
 
 const handleDuplicateKeyError = (err, res) => {
   const field = Object.keys(err.keyValue);
@@ -24,6 +25,7 @@ const Routesinit = (app) => {
   app.use("/user", UserRoutes);
   app.use("/submission", SubmissionRoutes);
   app.use("/problem", ProblemRoutes);
+  app.use("/admin", AdminRoutes);
 
   app.use((req, res, next) => {
     const err = new Error("Page Not Found");
