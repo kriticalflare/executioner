@@ -38,6 +38,7 @@ module.exports.Login = catchAsync(async (req, res, next) => {
       const token = jwt.sign({ id: user._id.toJSON() }, process.env.jwtKey, {
         expiresIn: 604800,
       });
+      user.password = undefined;
       res.status(200).json({
         message: msg,
         user: user,
