@@ -71,6 +71,11 @@ TestQueue.process(async (job) => {
     }
   } catch (e) {
     console.log("err", e);
+    await Submission.findByIdAndUpdate(job.data.submission._id, {
+      $set: {
+        status: "FAILED",
+      },
+    });
   }
 });
 
