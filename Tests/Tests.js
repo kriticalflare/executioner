@@ -14,131 +14,137 @@ const path = require("path");
 let token, userId, probId, subId;
 chai.use(chaiHttp);
 describe("Tests Start", () => {
-  before((done) => {
-    bcrypt
-      .hash("testingpassword", parseInt(process.env.Salt))
-      .then((password) => {
-        let user = {
-          email: "test@test.com",
-          username: "tester",
-          password: password,
-        };
-        User.deleteMany().then((deleted) => {
-          User.create(user).then((user) => {
-            done();
-          });
-        });
-      });
-  });
   after((done) => {
     User.deleteMany().then(() => {
       done();
     });
   });
-  it("Register", (done) => {
-    agent
-      .post("/user/register")
-      .send({
-        email: "register@test.com",
-        username: "testname",
-        password: "1234",
-      })
-      .end((err, res) => {
-        expect(res.body.message).to.be.equal("You Have Registered Sucessfully");
-        expect(res.status).to.be.equal(201);
-        expect(err).to.be.equal(null);
-        done();
-      });
+
+  describe("Auth tests", () => {
+    before((done) => {
+      bcrypt
+        .hash("testingpassword", parseInt(process.env.Salt))
+        .then((password) => {
+          let user = {
+            email: "test@test.com",
+            username: "tester",
+            password: password,
+          };
+          User.deleteMany().then((deleted) => {
+            User.create(user).then((user) => {
+              done();
+            });
+          });
+        });
+    });
+    it("Register", (done) => {
+      agent
+        .post("/user/register")
+        .send({
+          email: "register@test.com",
+          username: "testname",
+          password: "1234",
+        })
+        .end((err, res) => {
+          expect(res.body.message).to.be.equal(
+            "You Have Registered Sucessfully"
+          );
+          expect(res.status).to.be.equal(201);
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
+    it("Register With Invalid Email", (done) => {
+      agent
+        .post("/user/register")
+        .send({
+          email: "register",
+          username: "testname",
+          password: "1234",
+        })
+        .end((err, res) => {
+          expect(res.body.message).to.be.equal("Enter valid email");
+          expect(res.status).to.be.equal(400);
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
+    it("Register Without Email", (done) => {
+      agent
+        .post("/user/register")
+        .send({
+          username: "testname",
+          password: "1234",
+        })
+        .end((err, res) => {
+          expect(res.body.message).to.be.equal("Enter valid email");
+          expect(res.status).to.be.equal(400);
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
+    it("Login With Wrong Credentials", (done) => {
+      agent
+        .post("/user/login")
+        .send({
+          username: "test@test.com",
+          password: "1234",
+        })
+        .end((err, res) => {
+          expect(res.body.message).to.be.equal("Username or Password wrong");
+          expect(res.body.user).to.be.equal(undefined);
+          expect(res.status).to.be.equal(401);
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
+    it("Login With Proper Credentials", (done) => {
+      agent
+        .post("/user/login")
+        .send({
+          username: "testname",
+          password: "1234",
+        })
+        .end((err, res) => {
+          token = res.body.token;
+          userId = res.body.user._id;
+          expect(res.body.message).to.be.equal("Signin Sucessful");
+          expect(res.body.user).not.be.equal(undefined);
+          expect(res.status).to.be.equal(200);
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
+    it("Login Without Username", (done) => {
+      agent
+        .post("/user/login")
+        .send({
+          password: "testingpassword",
+        })
+        .end((err, res) => {
+          expect(res.body.message.message).to.be.equal("Missing credentials");
+          expect(res.body.user).to.be.equal(undefined);
+          expect(res.status).to.be.equal(401);
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
+    it("Login Without Password", (done) => {
+      agent
+        .post("/user/login")
+        .send({
+          username: "test@test.com",
+        })
+        .end((err, res) => {
+          expect(res.body.message.message).to.be.equal("Missing credentials");
+          expect(res.body.user).to.be.equal(undefined);
+          expect(res.status).to.be.equal(401);
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
   });
-  it("Register With Invalid Email", (done) => {
-    agent
-      .post("/user/register")
-      .send({
-        email: "register",
-        username: "testname",
-        password: "1234",
-      })
-      .end((err, res) => {
-        expect(res.body.message).to.be.equal("Enter valid email");
-        expect(res.status).to.be.equal(400);
-        expect(err).to.be.equal(null);
-        done();
-      });
-  });
-  it("Register Without Email", (done) => {
-    agent
-      .post("/user/register")
-      .send({
-        username: "testname",
-        password: "1234",
-      })
-      .end((err, res) => {
-        expect(res.body.message).to.be.equal("Enter valid email");
-        expect(res.status).to.be.equal(400);
-        expect(err).to.be.equal(null);
-        done();
-      });
-  });
-  it("Login With Wrong Credentials", (done) => {
-    agent
-      .post("/user/login")
-      .send({
-        username: "test@test.com",
-        password: "1234",
-      })
-      .end((err, res) => {
-        expect(res.body.message).to.be.equal("Username or Password wrong");
-        expect(res.body.user).to.be.equal(undefined);
-        expect(res.status).to.be.equal(401);
-        expect(err).to.be.equal(null);
-        done();
-      });
-  });
-  it("Login With Proper Credentials", (done) => {
-    agent
-      .post("/user/login")
-      .send({
-        username: "testname",
-        password: "1234",
-      })
-      .end((err, res) => {
-        token = res.body.token;
-        userId = res.body.user._id;
-        expect(res.body.message).to.be.equal("Signin Sucessful");
-        expect(res.body.user).not.be.equal(undefined);
-        expect(res.status).to.be.equal(200);
-        expect(err).to.be.equal(null);
-        done();
-      });
-  });
-  it("Login Without Username", (done) => {
-    agent
-      .post("/user/login")
-      .send({
-        password: "testingpassword",
-      })
-      .end((err, res) => {
-        expect(res.body.message.message).to.be.equal("Missing credentials");
-        expect(res.body.user).to.be.equal(undefined);
-        expect(res.status).to.be.equal(401);
-        expect(err).to.be.equal(null);
-        done();
-      });
-  });
-  it("Login Without Password", (done) => {
-    agent
-      .post("/user/login")
-      .send({
-        username: "test@test.com",
-      })
-      .end((err, res) => {
-        expect(res.body.message.message).to.be.equal("Missing credentials");
-        expect(res.body.user).to.be.equal(undefined);
-        expect(res.status).to.be.equal(401);
-        expect(err).to.be.equal(null);
-        done();
-      });
-  });
+
   describe("Hit apis without verification", () => {
     it("Create a Problem without verifying mail", (done) => {
       agent
@@ -384,7 +390,6 @@ describe("Tests Start", () => {
     });
 
     after(async () => {
-      console.log(__dirname);
       const folderPath = path.normalize(
         path.join(__dirname, "../Judge/Sandbox")
       );
@@ -454,7 +459,7 @@ describe("Tests Start", () => {
         });
     });
   });
-  let correctSub, incorrectSub;
+  let correctSub, incorrectSub, nzecSub;
   describe("Submissions API", () => {
     before(async () => {
       await User.findByIdAndUpdate(userId, {
@@ -507,6 +512,27 @@ describe("Tests Start", () => {
         });
     });
 
+    it("Create a Submission with NZEC code", (done) => {
+      agent
+        .put("/submission/create")
+        .auth(token, { type: "bearer" })
+        .send({
+          source:
+            "Y29uc3QgcmVhZExpbmUgPSByZXF1aXJlKCJyZWFkbGluZSIpOwoKdmFyIHJsID0gcmVhZExpbmUuY3JlYXRlSW50ZXJmYWNlKHByb2Nlc3Muc3RkaW4sIHByb2Nlc3Muc3Rkb3V0KTsKCnJsLm9uKCJsaW5lIiwgKGlucHV0KSA9PiB7CiAgbGV0IHN1bSA9IDA7CiAgbGV0IHRlbXAgPSBpbnB1dDsKICB3aGlsZSAodGVtcCA+IDApIHsKICAgIGxldCByZW1haW5kZXIgPSB0ZW1wICUgMTA7CiAgICBzdW0gKz0gcmVtYWluZGVyICogcmVtYWluZGVyICogcmVtYWluZGVyOwogICAgdGVtcCA9IHBhcnNlSW50KHRlbXAgLyAxMCk7CiAgfQogIGlmIChzdW0gPT0gaW5wdXQpIHsKICAgIGNvbnNvbGFzLmxvZygiWUVTIik7CiAgfSBlbHNlIHsKICAgIGNvbnNvbGUubG9nKCJOTyIpOwogIH0KICBybC5jbG9zZSgpOwp9KTsK",
+          problem: probId,
+        })
+        .end((err, res) => {
+          expect(res.body.message).to.be.equal("Successful");
+          expect(res.body.data).to.be.not.empty;
+          expect(res.body.data._id).to.be.not.empty;
+          nzecSub = res.body.data._id;
+          expect(res.status).to.be.equal(201);
+          expect(res.body.data.status).to.be.equal("QUEUED");
+          expect(err).to.be.equal(null);
+          done();
+        });
+    });
+
     it("Get all submissions", (done) => {
       agent
         .get("/submission/allSubmissions")
@@ -520,7 +546,8 @@ describe("Tests Start", () => {
           done();
         });
     });
-    it("View the correct submission", (done) => {
+    it("View the correct submission", function () {
+      this.retries(3);
       agent
         .get(`/submission/${correctSub}`)
         .auth(token, { type: "bearer" })
@@ -531,22 +558,36 @@ describe("Tests Start", () => {
           expect(res.body.data).to.be.not.empty;
           expect(res.body.data.status).to.be.equal("ACCEPTED");
           expect(err).to.be.equal(null);
-          done();
         });
     });
-    it("View the incorrect submission", (done) => {
+    it("View the incorrect submission", function () {
+      this.retries(3);
       agent
         .get(`/submission/${incorrectSub}`)
         .auth(token, { type: "bearer" })
         .send()
         .end((err, res) => {
-          // console.log(incorrectSub);
+          console.log(incorrectSub);
           expect(res.body.message).to.be.equal("Successful");
           expect(res.status).to.be.equal(200);
           expect(res.body.data).to.be.not.empty;
           expect(res.body.data.status).to.be.equal("WA");
           expect(err).to.be.equal(null);
-          done();
+        });
+    });
+    it("View the NZEC submission", function () {
+      this.retries(3);
+      agent
+        .get(`/submission/${nzecSub}`)
+        .auth(token, { type: "bearer" })
+        .send()
+        .end((err, res) => {
+          console.log(incorrectSub);
+          expect(res.body.message).to.be.equal("Successful");
+          expect(res.status).to.be.equal(200);
+          expect(res.body.data).to.be.not.empty;
+          expect(res.body.data.status).to.be.equal("NZEC");
+          expect(err).to.be.equal(null);
         });
     });
   });
