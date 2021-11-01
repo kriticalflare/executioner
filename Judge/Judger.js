@@ -19,12 +19,9 @@ TestQueue.process(async (job) => {
       const text = buff.toString();
 
       const codeFileName = nanoid();
-      const inputFileName = nanoid();
       const codePath = path.join(__dirname, "Sandbox", `${codeFileName}.js`);
-      const inputPath = path.join(__dirname, "Sandbox", `${inputFileName}.txt`);
-      console.log(__dirname);
+
       await fs.writeFile(codePath, text);
-      await fs.writeFile(inputPath, test.input);
 
       const childprocess = spawn("node", [codePath]);
 
@@ -60,7 +57,6 @@ TestQueue.process(async (job) => {
           earlyExit = true;
         }
         fs.unlink(codePath);
-        fs.unlink(inputPath);
       });
       if (earlyExit) {
         break;
