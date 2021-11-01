@@ -52,7 +52,6 @@ TestQueue.process(async (job) => {
       });
 
       childprocess.on("close", async (output) => {
-        console.log(`stdout: childprocess ${output}`);
         if (!(output == 0 && stdoutCompared)) {
           earlyExit = true;
         }
