@@ -5,9 +5,11 @@ const baseUrl = "localhost:3000";
 const request = require("supertest");
 const agent = request.agent(baseUrl);
 const app = require("../server");
-const User = require("./../Models/User");
+const User = require("../Models/User");
 const bcrypt = require("bcrypt");
 const Problem = require("../Models/Problem");
+const { promises: fs } = require("fs");
+const path = require("path");
 
 let token, userId, probId, subId;
 chai.use(chaiHttp);
@@ -149,15 +151,15 @@ describe("Tests Start", () => {
           tests: [
             {
               input: "0",
-              output: "true",
+              output: "YES",
             },
             {
               input: "153",
-              output: "true",
+              output: "YES",
             },
             {
               input: "242",
-              output: "false",
+              output: "NO",
             },
           ],
         })
@@ -203,15 +205,15 @@ describe("Tests Start", () => {
           tests: [
             {
               input: "0",
-              output: "true",
+              output: "YES",
             },
             {
               input: "153",
-              output: "true",
+              output: "YES",
             },
             {
               input: "242",
-              output: "false",
+              output: "NO",
             },
           ],
         })
@@ -286,15 +288,15 @@ describe("Tests Start", () => {
           tests: [
             {
               input: "0",
-              output: "true",
+              output: "YES",
             },
             {
               input: "153",
-              output: "true",
+              output: "YES",
             },
             {
               input: "242",
-              output: "false",
+              output: "NO",
             },
           ],
         })
@@ -381,6 +383,16 @@ describe("Tests Start", () => {
       });
     });
 
+    after(async () => {
+      console.log(__dirname);
+      const folderPath = path.normalize(
+        path.join(__dirname, "../Judge/Sandbox")
+      );
+      let files = await fs.readdir(folderPath);
+      files = files.filter((f) => !f.includes(".gitignore"));
+      Promise.all(files.map((f) => fs.unlink(path.join(folderPath, f))));
+    });
+
     it("Create a Problem", (done) => {
       agent
         .put("/problem/create")
@@ -459,7 +471,7 @@ describe("Tests Start", () => {
         .auth(token, { type: "bearer" })
         .send({
           source:
-            "Y29uc3QgcmVhZExpbmUgPSByZXF1aXJlKCJyZWFkbGluZSIpOwoKdmFyIHJsID0gcmVhZExpbmUuY3JlYXRlSW50ZXJmYWNlKHByb2Nlc3Muc3RkaW4sIHByb2Nlc3Muc3Rkb3V0KTsKCnJsLm9uKCJsaW5lIiwgKGlucHV0KSA9PiB7CiAgbGV0IHN1bSA9IDA7CiAgbGV0IHRlbXAgPSBpbnB1dDsKICB3aGlsZSAodGVtcCA+IDApIHsKICAgIGNvbnN0IHJlbSA9IE1hdGguZmxvb3IodGVtcCAlIDEwKTsKICAgIHN1bSA9IHN1bSArIE1hdGgucG93KHJlbSwgMyk7CiAgICB0ZW1wID0gdGVtcCAvIDEwOwogIH0KICBpZiAoc3VtID09IGlucHV0KSB7CiAgICBjb25zb2xlLmxvZygiWUVTIik7CiAgfSBlbHNlIHsKICAgIGNvbnNvbGUubG9nKCJOTyIpOwogIH0KICBybC5jbG9zZSgpOwp9KTsK",
+            "Y29uc3QgcmVhZExpbmUgPSByZXF1aXJlKCJyZWFkbGluZSIpOwoKdmFyIHJsID0gcmVhZExpbmUuY3JlYXRlSW50ZXJmYWNlKHByb2Nlc3Muc3RkaW4sIHByb2Nlc3Muc3Rkb3V0KTsKCnJsLm9uKCJsaW5lIiwgKGlucHV0KSA9PiB7CiAgbGV0IHN1bSA9IDA7CiAgbGV0IHRlbXAgPSBpbnB1dDsKICB3aGlsZSAodGVtcCA+IDApIHsKICAgIGxldCByZW1haW5kZXIgPSB0ZW1wICUgMTA7CiAgICBzdW0gKz0gcmVtYWluZGVyICogcmVtYWluZGVyICogcmVtYWluZGVyOwogICAgdGVtcCA9IHBhcnNlSW50KHRlbXAgLyAxMCk7CiAgfQogIGlmIChzdW0gPT0gaW5wdXQpIHsKICAgIGNvbnNvbGUubG9nKCJZRVMiKTsKICB9IGVsc2UgewogICAgY29uc29sZS5sb2coIk5PIik7CiAgfQogIHJsLmNsb3NlKCk7Cn0pOwo=",
           problem: probId,
         })
         .end((err, res) => {
@@ -480,7 +492,7 @@ describe("Tests Start", () => {
         .auth(token, { type: "bearer" })
         .send({
           source:
-            "Y29uc3QgcmVhZExpbmUgPSByZXF1aXJlKCJyZWFkbGluZSIpOwoKdmFyIHJsID0gcmVhZExpbmUuY3JlYXRlSW50ZXJmYWNlKHByb2Nlc3Muc3RkaW4sIHByb2Nlc3Muc3Rkb3V0KTsKCnJsLm9uKCJsaW5lIiwgKGlucHV0KSA9PiB7CiAgbGV0IHN1bSA9IDA7CiAgbGV0IHRlbXAgPSBpbnB1dDsKICB3aGlsZSAodGVtcCA+IDApIHsKICAgIGNvbnN0IHJlbSA9IE1hdGguZmxvb3IodGVtcCAlIDEwKTsKICAgIHN1bSA9IHN1bSArIE1hdGgucG93KHJlbSwgMyk7CiAgICB0ZW1wID0gdGVtcCAvIDEwOwogIH0KICBpZiAoc3VtICE9IGlucHV0KSB7CiAgICBjb25zb2xlLmxvZygiWUVTIik7CiAgfSBlbHNlIHsKICAgIGNvbnNvbGUubG9nKCJOTyIpOwogIH0KICBybC5jbG9zZSgpOwp9KTsK",
+            "Y29uc3QgcmVhZExpbmUgPSByZXF1aXJlKCJyZWFkbGluZSIpOwoKdmFyIHJsID0gcmVhZExpbmUuY3JlYXRlSW50ZXJmYWNlKHByb2Nlc3Muc3RkaW4sIHByb2Nlc3Muc3Rkb3V0KTsKCnJsLm9uKCJsaW5lIiwgKGlucHV0KSA9PiB7CiAgbGV0IHN1bSA9IDA7CiAgbGV0IHRlbXAgPSBpbnB1dDsKICB3aGlsZSAodGVtcCA+IDApIHsKICAgIGxldCByZW1haW5kZXIgPSB0ZW1wICUgMTA7CiAgICBzdW0gKz0gcmVtYWluZGVyICogcmVtYWluZGVyICogcmVtYWluZGVyOwogICAgdGVtcCA9IHBhcnNlSW50KHRlbXAgLyAxMCk7CiAgfQogIGlmIChzdW0gIT0gaW5wdXQpIHsKICAgIGNvbnNvbGUubG9nKCJZRVMiKTsKICB9IGVsc2UgewogICAgY29uc29sZS5sb2coIk5PIik7CiAgfQogIHJsLmNsb3NlKCk7Cn0pOwo=",
           problem: probId,
         })
         .end((err, res) => {
@@ -528,6 +540,7 @@ describe("Tests Start", () => {
         .auth(token, { type: "bearer" })
         .send()
         .end((err, res) => {
+          // console.log(incorrectSub);
           expect(res.body.message).to.be.equal("Successful");
           expect(res.status).to.be.equal(200);
           expect(res.body.data).to.be.not.empty;
