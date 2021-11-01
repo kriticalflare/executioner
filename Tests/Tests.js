@@ -567,7 +567,6 @@ describe("Tests Start", () => {
         .auth(token, { type: "bearer" })
         .send()
         .end((err, res) => {
-          console.log(incorrectSub);
           expect(res.body.message).to.be.equal("Successful");
           expect(res.status).to.be.equal(200);
           expect(res.body.data).to.be.not.empty;
@@ -582,7 +581,6 @@ describe("Tests Start", () => {
         .auth(token, { type: "bearer" })
         .send()
         .end((err, res) => {
-          console.log(incorrectSub);
           expect(res.body.message).to.be.equal("Successful");
           expect(res.status).to.be.equal(200);
           expect(res.body.data).to.be.not.empty;
