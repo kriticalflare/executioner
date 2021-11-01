@@ -5,7 +5,9 @@ require("./passport");
 const morgan = require("morgan");
 
 /*Initialize Logging*/
-app.use(morgan("dev"));
+if (process.env.NODE_ENV != "test") {
+  app.use(morgan("dev"));
+}
 
 /*Initialize Database */
 require("./database").connect();
