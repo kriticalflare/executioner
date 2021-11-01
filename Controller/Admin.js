@@ -1,6 +1,7 @@
 const UserModel = require("../Models/User");
+const { catchAsync } = require("../Utils/CatchAsync");
 
-module.exports.PromoteToAdmin = async (req, res, next) => {
+module.exports.PromoteToAdmin = catchAsync(async (req, res, next) => {
   const userId = req.body.user_id;
   const update = {
     $set: {
@@ -13,9 +14,9 @@ module.exports.PromoteToAdmin = async (req, res, next) => {
   } else {
     res.status(400).json({ message: "Unsuccessful" });
   }
-};
+});
 
-module.exports.DemoteToUser = async (req, res, next) => {
+module.exports.DemoteToUser = catchAsync(async (req, res, next) => {
   const userId = req.body.user_id;
   const update = {
     $set: {
@@ -28,4 +29,4 @@ module.exports.DemoteToUser = async (req, res, next) => {
   } else {
     res.status(400).json({ message: "Unsuccessful" });
   }
-};
+});
