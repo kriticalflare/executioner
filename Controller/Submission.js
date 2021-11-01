@@ -1,5 +1,6 @@
 const { addToQ } = require("../Judge/Judger");
 const SubmissionModel = require("./../Models/Submission");
+const mongoose = require("mongoose");
 
 module.exports.CreateSubmission = async (req, res, next) => {
   const submission = req.body;
@@ -12,11 +13,18 @@ module.exports.CreateSubmission = async (req, res, next) => {
 
 module.exports.ViewSubmission = async (req, res, next) => {
   const subId = req.params.id;
+  if (!mongoose.isValidObjectId(subId)) {
+    return res.status(400).json({ message: "Submission Id is not valid" });
+  }
   const submission = await SubmissionModel.findOne({
     _id: subId,
     createdBy: req.user._id,
   });
-  res.status(200).json({ message: "Successful", data: submission });
+  if (submission) {
+    res.status(200).json({ message: "Successful", data: submission });
+  } else {
+    res.status(404).json({ message: "Submission doesn't exist" });
+  }
 };
 
 module.exports.ViewAllSubmissions = async (req, res, next) => {
@@ -27,6 +35,6 @@ module.exports.ViewAllSubmissions = async (req, res, next) => {
     .skip(skip)
     .limit(limit);
   if (submissions) {
-    res.status(201).json({ message: "Successful", data: submissions });
+    res.status(200).json({ message: "Successful", data: submissions });
   }
 };

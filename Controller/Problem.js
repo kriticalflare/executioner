@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const ProblemModel = require("./../Models/Problem");
 
 module.exports.CreateProblem = async (req, res, next) => {
@@ -11,6 +12,9 @@ module.exports.CreateProblem = async (req, res, next) => {
 
 module.exports.ViewProblem = async (req, res, next) => {
   const probId = req.params.id;
+  if (!mongoose.isValidObjectId(probId)) {
+    return res.status(400).json({ message: "Problem Id is not valid" });
+  }
   const problem = await ProblemModel.findOne({
     _id: probId,
   }).select("-tests");
