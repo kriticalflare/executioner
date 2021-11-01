@@ -12,6 +12,8 @@ TestQueue.process(async (job) => {
     const submission = job.data.submission;
     const problem = await Problem.findById(submission.problem);
     let earlyExit = false;
+    const testCount = problem.tests.length;
+    let testsCompleted = 0;
     for (const test of problem.tests) {
       let stdoutCompared = false;
       const data = submission.source;
@@ -56,25 +58,26 @@ TestQueue.process(async (job) => {
           earlyExit = true;
         }
         fs.unlink(codePath);
-      });
-      if (earlyExit) {
-        break;
-      }
-    }
-    if (!earlyExit) {
-      await Submission.findByIdAndUpdate(submission._id, {
-        $set: {
-          status: "ACCEPTED",
-        },
+        testsCompleted = testsCompleted + 1;
+        if (testsCompleted == testCount && !earlyExit) {
+          await Submission.findByIdAndUpdate(submission._id, {
+            $set: {
+              status: "ACCEPTED",
+            },
+          });
+        }
       });
     }
   } catch (e) {
-    console.log("err", e);
     await Submission.findByIdAndUpdate(job.data.submission._id, {
       $set: {
         status: "FAILED",
       },
     });
+    const folderPath = path.normalize(path.join(__dirname, "Sandbox"));
+    let files = await fs.readdir(folderPath);
+    files = files.filter((f) => !f.includes(".gitignore"));
+    Promise.all(files.map((f) => fs.unlink(path.join(folderPath, f))));
   }
 });
 
