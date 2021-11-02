@@ -12,6 +12,18 @@ module.exports.CreateSubmission = catchAsync(async (req, res, next) => {
   res.status(201).json({ message: "Successful", data: createdSubmission });
 });
 
+module.exports.FileSubmission = catchAsync(async (req, res, next) => {
+  const submission = {
+    problem: req.body.problem,
+    source: req.files["source"][0].buffer.toString("base64"),
+    createdBy: req.user._id,
+    status: "QUEUED",
+  };
+  const createdSubmission = await SubmissionModel.create(submission);
+  addToQ(createdSubmission);
+  res.status(201).json({ message: "Successful", data: createdSubmission });
+});
+
 module.exports.ViewSubmission = catchAsync(async (req, res, next) => {
   const subId = req.params.id;
   if (!mongoose.isValidObjectId(subId)) {
