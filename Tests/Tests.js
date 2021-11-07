@@ -14,12 +14,6 @@ const path = require("path");
 let token, userId, probId, subId;
 chai.use(chaiHttp);
 describe("Tests Start", () => {
-  after((done) => {
-    User.deleteMany().then(() => {
-      done();
-    });
-  });
-
   describe("Auth tests", () => {
     before((done) => {
       bcrypt
