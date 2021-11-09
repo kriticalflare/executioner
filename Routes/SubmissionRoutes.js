@@ -17,7 +17,7 @@ SubmissionRoutes.put(
   SubmissionController.FileSubmission
 );
 SubmissionRoutes.get(
-  "/allSubmissions",
+  "/all-submissions",
   SubmissionController.ViewAllSubmissions
 );
 SubmissionRoutes.get("/:id", SubmissionController.ViewSubmission);

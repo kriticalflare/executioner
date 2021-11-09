@@ -529,7 +529,7 @@ describe("Tests Start", () => {
 
     it("Get all submissions", (done) => {
       agent
-        .get("/submission/allSubmissions")
+        .get("/submission/all-submissions")
         .auth(token, { type: "bearer" })
         .send()
         .end((err, res) => {
