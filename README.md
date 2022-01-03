@@ -8,7 +8,6 @@ An online code execution engine built with a focus on a clean API and scalabilit
 ![image](https://user-images.githubusercontent.com/42350771/147907260-9cc74643-bf01-4dfe-9b2d-e776f7cb9ff7.png)
 
 ## Inspiration 
-
 Executioner was inspired by [Judge0](https://github.com/judge0/judge0), i recommend checking them out.
 
 ## Built With 🛠
@@ -23,3 +22,6 @@ Executioner was inspired by [Judge0](https://github.com/judge0/judge0), i recomm
 - [nanoid](https://www.npmjs.com/package/nanoid) - A tiny, secure, URL-friendly, unique string ID generator for JavaScript
 - [nodemailer](https://www.npmjs.com/package/nodemailer) - Send e-mails from Node.js 
 - [passport](https://www.npmjs.com/package/passport) - Passport is Express-compatible authentication middleware for Node.js
+- [chai](https://www.npmjs.com/package/chai) - Chai is a BDD / TDD assertion library for node 
+- [mocha](https://www.npmjs.com/package/mocha) -  Simple, flexible JavaScript test framework for Node.js
+- [supertest](https://www.npmjs.com/package/supertest) - HTTP assertions made easy via superagent.
